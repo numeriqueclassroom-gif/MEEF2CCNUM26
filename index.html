@@ -162,6 +162,25 @@ table.samr td.test{font-style:italic;color:var(--ink);font-weight:600;min-width:
 .phases li b::before{content:counter(ph);font-family:var(--f-mono);font-size:.72rem;font-weight:500;width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--heart);color:var(--heart-ink)}
 .phases li span{font-size:.9rem;color:var(--muted)}
 .seq-note{font-size:.95rem;background:color-mix(in srgb,var(--heart) 9%,var(--surface));border-radius:12px;padding:10px 14px}
+.parts{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:pt}
+.parts li{counter-increment:pt;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--p);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.parts li b{font-family:var(--f-display);font-size:1.2rem;letter-spacing:-.015em;display:flex;gap:8px;align-items:center}
+.parts li b::before{content:counter(pt);font-family:var(--f-mono);font-size:.75rem;font-weight:500;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:var(--p);color:var(--surface)}
+.parts .who{align-self:flex-start;font-family:var(--f-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--p) 12%,var(--surface));color:var(--p)}
+.parts li>span:last-child{font-size:.92rem;color:var(--muted)}
+.grille{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.grille-t{font-family:var(--f-display);font-weight:700;font-size:1.25rem;letter-spacing:-.015em;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lvl-chip{font-family:var(--f-mono);font-size:.7rem;font-weight:500;letter-spacing:.03em;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink)}
+.lvl-chip.x{background:var(--ink);color:var(--bg)}
+.phases3{display:grid;grid-template-columns:1fr 1.3fr .9fr;gap:12px}
+.ph{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.ph-t{font-weight:700;display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.ph-t span{font-family:var(--f-mono);font-size:.72rem;width:24px;height:24px;display:grid;place-items:center;border-radius:7px;background:var(--ink);color:var(--bg)}
+.ph ol{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:4px;font-size:.93rem}
+.ph li::marker{font-family:var(--f-mono);color:var(--muted)}
+.cta{align-self:flex-start;font-weight:600;text-decoration:none;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.cta:hover{filter:brightness(1.15)}
+@media (max-width:860px){.parts,.phases3{grid-template-columns:minmax(0,1fr)}}
 /* Synthèse */
 .grid7{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
 .q7{background:color-mix(in srgb,var(--p) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--p) 20%,var(--line));border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
@@ -185,6 +204,7 @@ footer{margin-top:72px;padding-top:18px;border-top:1px solid var(--line);font-si
 </head>
 <body>
 <nav class="topnav" aria-label="Sections"><div class="inner">
+  <a href="#evaluation" style="--p:var(--ink)">Évaluation</a>
   <a href="#coeur" style="--p:var(--heart)">Objectif langagier</a>
   <a href="#bloom" style="--p:var(--c-bloom)">Bloom</a>
   <a href="#c21" style="--p:var(--c-c21)">21e siècle</a>
@@ -207,6 +227,27 @@ footer{margin-top:72px;padding-top:18px;border-top:1px solid var(--line);font-si
     <svg id="flower" viewBox="-215 -215 430 430" role="group" aria-label="Sommaire : cliquez sur un repère pour aller à la section"></svg>
   </div>
 </header>
+
+<!-- ÉVALUATION -->
+<section class="petal-sec" id="evaluation" style="--p:var(--ink)">
+  <div class="sec-head"><span class="mono">Préambule</span><h2>Ce que vous allez produire, et comment c'est évalué</h2></div>
+  <p class="question">Une séquence d'anglais intégrant le numérique, conçue en groupe et approfondie individuellement.</p>
+  <ol class="parts">
+    <li style="--p:var(--c-bloom)"><span class="who">En groupe</span><b>Préparer</b><span>Décrire la séquence (objectifs, séances, évaluations, tâche finale) et réfléchir à trois usages : s'entraîner, acquérir, produire.</span></li>
+    <li style="--p:var(--c-c21)"><span class="who">Individuel</span><b>Approfondir</b><span>Un usage chacun : analyse de l'outil (RGPD), mise en œuvre avec plan B, justification par Bloom, SAMR, CRCN et 4C.</span></li>
+    <li style="--p:var(--c-samr)"><span class="who">En groupe</span><b>Vérifier</b><span>Cohérence d'ensemble, plus-value de chaque usage, RGPD, différenciation, anticipation des problèmes.</span></li>
+    <li style="--p:var(--c-ia)"><span class="who">Au choix</span><b>Retour réflexif</b><span>A : présentation orale en visio. B : enregistrement audio ou vidéo sur le Digipad.</span></li>
+  </ol>
+  <div class="grille">
+    <p class="grille-t">La grille : 8 items, 3 phases, 2 niveaux <span class="lvl-chip">1 · Attendu</span><span class="lvl-chip x">2 · Expert</span></p>
+    <div class="phases3">
+      <div class="ph"><p class="ph-t"><span>A</span>Conception</p><ol start="1"><li>Pertinence stratégique du numérique</li><li>Démarche de conception, éthique et droit</li><li>Prise en compte du public, compétences CRCN</li></ol></div>
+      <div class="ph"><p class="ph-t"><span>B</span>Mise en œuvre</p><ol start="4"><li>Gestion du matériel et plan B</li><li>Accompagnement et différenciation</li><li>Atteinte des objectifs, traces</li><li>Écart entre prévu et réalisé</li></ol></div>
+      <div class="ph"><p class="ph-t"><span>C</span>Retour réflexif</p><ol start="8"><li>Communication et compétences développées</li></ol></div>
+    </div>
+    <a class="cta" href="https://missdclassroom.github.io/MEEF2-TP/" target="_blank" rel="noopener">Ouvrir la consigne et la grille complète →</a>
+  </div>
+</section>
 
 <!-- CŒUR -->
 <section class="petal-sec" id="coeur" style="--p:var(--heart)">
