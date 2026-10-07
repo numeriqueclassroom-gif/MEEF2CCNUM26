@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le numérique éducatif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : un tableau de bord éditorial clair. Barre de navigation en pastilles, schéma central en sommaire, sections en cartes douces ; chaque repère a sa couleur. */
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --surface-2:#F8FAF9; --ink:#14201B; --muted:#5B6A64; --line:#E1E7E4; --heart:#1F5C4B; --heart-ink:#FFFFFF; --soft:#EEF2F0;
+  --c-c21:#C2397A; --c-bloom:#2F6FD0; --c-samr:#8A4FD8; --c-outils:#20895A; --c-rgpd:#D2463A; --c-pix:#C28410; --c-ia:#11928C;
+  --shadow:0 1px 2px rgba(20,32,27,.04),0 8px 24px -12px rgba(20,32,27,.12);
+  --r:18px; --shine:rgba(255,255,255,.6);
+  --f-display:"Bricolage Grotesque", "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1412; --surface:#161E1B; --surface-2:#1B2521; --ink:#E8EFEC; --muted:#9AAAA3; --line:#26322D; --heart:#6FD0B0; --heart-ink:#0B120F; --soft:#1E2925;
+  --c-c21:#F08BBB; --c-bloom:#7DAAF2; --c-samr:#B996F2; --c-outils:#6CD39E; --c-rgpd:#F28C80; --c-pix:#EDBB57; --c-ia:#5ED3CC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6); --shine:rgba(255,255,255,.12); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#161E1B; --surface-2:#1B2521; --ink:#E8EFEC; --muted:#9AAAA3; --line:#26322D; --heart:#6FD0B0; --heart-ink:#0B120F; --soft:#1E2925;
+  --c-c21:#F08BBB; --c-bloom:#7DAAF2; --c-samr:#B996F2; --c-outils:#6CD39E; --c-rgpd:#F28C80; --c-pix:#EDBB57; --c-ia:#5ED3CC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6); --shine:rgba(255,255,255,.12); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.62;padding-inline:20px;padding-block:0 72px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.05;letter-spacing:-.025em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.6rem,6.4vw,4.6rem);font-weight:800;letter-spacing:-.04em}
+h2{font-size:clamp(1.65rem,3.2vw,2.35rem)}
+p{margin:0}
+a{color:inherit;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
+a:hover{text-decoration-color:currentColor}
+.mono{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase}
+.muted{color:var(--muted)}
+:focus-visible{outline:2px solid var(--heart);outline-offset:3px;border-radius:8px}
+
+/* Navigation */
+.topnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-inline:-20px;padding:10px 20px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.topnav .inner{max-width:1120px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.topnav .inner::-webkit-scrollbar{display:none}
+.topnav a{--p:var(--heart);flex:none;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:.88rem;font-weight:500;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);transition:background .2s,border-color .2s}
+.topnav a::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--p)}
+.topnav a:hover{border-color:var(--p);background:color-mix(in srgb,var(--p) 8%,var(--surface))}
+
+/* En-tête */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:center;padding-block:56px 24px}
+.hero-text{display:flex;flex-direction:column;gap:22px;min-width:0}
+.hero-text>.mono{align-self:flex-start;padding:5px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.hero-text .lede{font-size:1.18rem;line-height:1.55;max-width:32em;color:var(--muted)}
+.hero-text .lede strong{color:var(--ink)}
+.flower-box{min-width:0;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--heart) 7%,var(--surface)) 0%,var(--surface) 62%);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:18px}
+#flower{width:100%;max-width:460px;display:block;margin:0 auto;height:auto}
+.petal{cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.petal path{stroke:var(--surface);stroke-width:3;filter:url(#petalShadow)}
+.petal .shine{fill:none;stroke:var(--shine);stroke-width:1.5;filter:none;stroke-linecap:round}
+.petal text{fill:var(--ink);font-family:var(--f-body);font-weight:600;font-size:14.5px;text-anchor:middle;pointer-events:none}
+.petal .t-min{font-family:var(--f-mono);font-weight:400;font-size:10.5px;fill:var(--muted)}
+.petal:hover,.petal:focus-visible{transform:translate(var(--dx),var(--dy))}
+.petal:hover path:first-of-type,.petal:focus-visible path:first-of-type{filter:url(#petalShadowHover)}
+.petal:focus{outline:none}
+.heart circle{fill:url(#heartGrad);cursor:pointer;stroke:var(--surface);stroke-width:4;filter:url(#heartShadow)}
+.heart text{fill:var(--heart-ink);font-family:var(--f-display);font-weight:700;font-size:16px;text-anchor:middle;pointer-events:none;letter-spacing:-.01em}
+.heart .t-small{font-family:var(--f-mono);font-weight:400;font-size:9.5px;letter-spacing:.08em;opacity:.8}
+.heart:focus{outline:none}
+.heart:focus-visible circle{stroke:var(--ink)}
+
+/* Sections */
+.petal-sec{--p:var(--heart);margin-top:72px;display:flex;flex-direction:column;gap:20px;scroll-margin-top:72px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 8px}
+.sec-head .mono{order:0;color:var(--p);background:color-mix(in srgb,var(--p) 11%,var(--surface));padding:5px 12px;border-radius:999px;font-weight:500}
+.sec-head .time{order:1;font-family:var(--f-mono);font-size:.74rem;color:var(--muted);padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.sec-head h2{order:2;flex-basis:100%;margin-top:4px}
+.question{font-size:1.12rem;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;align-items:start}
+.main-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.pad{border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:6px;background:color-mix(in srgb,var(--p) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--p) 22%,var(--surface))}
+.pad .mono{color:var(--p);font-weight:500}
+.pad p{font-weight:500;font-size:1.05rem}
+
+details.layer{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);transition:border-color .2s}
+details.layer[open]{border-color:color-mix(in srgb,var(--p) 35%,var(--line))}
+details.layer>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;font-weight:600}
+details.layer>summary::-webkit-details-marker{display:none}
+details.layer>summary::before{content:"";width:26px;height:26px;flex:none;border-radius:8px;background:color-mix(in srgb,var(--p) 12%,var(--surface)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 4l4 4-4 4' fill='none' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;transition:transform .2s ease}
+details.layer[open]>summary::before{transform:rotate(90deg)}
+details.layer>summary .lvl{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-left:auto}
+.layer-body{padding:0 20px 20px 58px;display:flex;flex-direction:column;gap:12px}
+.layer-body ul{margin:0;padding-left:1.1em}
+.layer-body li{margin-block:3px}
+.layer-body li::marker{color:var(--p)}
+.key{font-family:var(--f-display);font-weight:600;font-size:1.32rem;line-height:1.25;letter-spacing:-.015em;color:var(--p)}
+
+.ladder{display:grid;gap:6px;margin:4px 0}
+.rung{display:grid;grid-template-columns:2.2em minmax(0,8.5em) minmax(0,1fr);gap:10px;align-items:baseline;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--p) calc(var(--w) * 1%),var(--surface-2))}
+.rung b{font-family:var(--f-mono);font-weight:500;color:var(--p)}
+.rung span:last-child{font-size:.95rem}
+.ptag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-right:6px;font-style:normal;padding:2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:680px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface-2)}
+td:first-child{font-weight:700;color:var(--p);white-space:nowrap}
+td.weak{color:var(--muted);font-style:italic}
+table.samr tbody tr{background:color-mix(in srgb,var(--p) calc(var(--w) * 1%),var(--surface))}
+table.samr td.test{font-style:italic;color:var(--ink);font-weight:600;min-width:9em}
+
+.quiz{border-radius:14px;background:var(--surface-2);border:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.quiz-q{font-weight:600}
+.reveal{align-self:flex-start;font:inherit;font-size:.86rem;font-weight:600;color:var(--surface);background:var(--p);border:0;border-radius:999px;padding:6px 14px;cursor:pointer;transition:filter .15s}
+.reveal:hover{filter:brightness(1.08)}
+.answer{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.sources{font-size:.92rem}
+.sources li{margin-block:6px}
+.vig{font-size:.95rem;background:var(--soft);border-radius:12px;padding:10px 14px}
+.note-star{font-size:.95rem;background:color-mix(in srgb,var(--p) 8%,var(--surface));border-radius:12px;padding:10px 14px}
+
+/* Encart des trois pratiques */
+.side{position:sticky;top:76px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.side>.mono{color:var(--muted)}
+.prac{display:flex;flex-direction:column;gap:4px;padding-top:12px;border-top:1px solid var(--line)}
+.prac:first-of-type{border-top:0;padding-top:0}
+.prac .name{font-family:var(--f-display);font-weight:700;font-size:1.06rem;letter-spacing:-.01em;color:var(--p)}
+.prac p{font-size:.93rem;color:var(--muted)}
+.side .gain{font-size:.92rem;font-weight:500;background:color-mix(in srgb,var(--p) 10%,var(--surface));border-radius:12px;padding:12px 14px}
+
+.texts{display:flex;flex-direction:column;gap:16px}
+.texts .lead{max-width:64em;font-size:1.04rem}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.trio>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.trio .name{font-family:var(--f-display);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--p)}
+.trio p{font-size:.93rem;color:var(--muted)}
+.weak-list{display:flex;flex-direction:column;gap:6px}
+
+.crcn{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+.dom{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dom-t{font-weight:700;display:flex;gap:8px;align-items:center}
+.dom-t span{font-family:var(--f-mono);font-size:.75rem;width:22px;height:22px;display:grid;place-items:center;border-radius:6px;background:var(--p);color:var(--surface)}
+.dom ul{list-style:none;padding:0!important;margin:0;display:flex;flex-direction:column;gap:4px}
+.dom li{display:grid;grid-template-columns:2.4em minmax(0,1fr);gap:6px;font-size:.92rem;padding:5px 8px;border-radius:8px;color:var(--muted);margin:0!important}
+.dom li b{font-family:var(--f-mono);font-weight:500;font-size:.8rem}
+.dom li span{display:flex;flex-direction:column}
+.dom li small{font-size:.8rem;color:var(--muted)}
+.dom li.hl{background:color-mix(in srgb,var(--p) 22%,var(--surface));color:var(--ink);font-weight:600}
+.dom li.hl small{font-weight:400;color:var(--ink);opacity:.8}
+.crcn-legend{font-size:.88rem;color:var(--muted)}
+.crcn-legend mark{background:color-mix(in srgb,var(--p) 22%,var(--surface));color:var(--ink);padding:1px 6px;border-radius:4px;font-weight:600}
+.seq{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.seq-t{font-family:var(--f-display);font-weight:700;font-size:1.3rem;letter-spacing:-.015em}
+.phases{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;counter-reset:ph}
+.phases li{counter-increment:ph;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.phases li b{display:flex;gap:8px;align-items:center}
+.phases li b::before{content:counter(ph);font-family:var(--f-mono);font-size:.72rem;font-weight:500;width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--heart);color:var(--heart-ink)}
+.phases li span{font-size:.9rem;color:var(--muted)}
+.seq-note{font-size:.95rem;background:color-mix(in srgb,var(--heart) 9%,var(--surface));border-radius:12px;padding:10px 14px}
+/* Synthèse */
+.grid7{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+.q7{background:color-mix(in srgb,var(--p) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--p) 20%,var(--line));border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.q7 .mono{color:var(--p);font-weight:500}
+.q7 p{font-weight:600}
+.q7 small{color:var(--muted);font-size:.88rem}
+
+.back{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));font:inherit;font-weight:600;font-size:.88rem;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:10px 16px;cursor:pointer;box-shadow:var(--shadow)}
+footer{margin-top:72px;padding-top:18px;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}
+
+@media (max-width:860px){
+  .hero,.cols,.trio{grid-template-columns:minmax(0,1fr)}
+  .hero{padding-block:32px 8px;gap:24px}
+  .side{position:static}
+  .layer-body{padding-left:20px}
+  .rung{grid-template-columns:2em minmax(0,1fr)}
+  .rung span:last-child{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Sections"><div class="inner">
+  <a href="#coeur" style="--p:var(--heart)">Objectif langagier</a>
+  <a href="#bloom" style="--p:var(--c-bloom)">Bloom</a>
+  <a href="#c21" style="--p:var(--c-c21)">21e siècle</a>
+  <a href="#samr" style="--p:var(--c-samr)">SAMR</a>
+  <a href="#outils" style="--p:var(--c-outils)">Outils</a>
+  <a href="#rgpd" style="--p:var(--c-rgpd)">RGPD</a>
+  <a href="#pix" style="--p:var(--c-pix)">Pix · CRCN</a>
+  <a href="#ia" style="--p:var(--c-ia)">IA</a>
+  <a href="#synthese" style="--p:var(--heart)">Synthèse</a>
+</div></nav>
+<div class="wrap">
+
+<header class="hero" id="top">
+  <div class="hero-text">
+    <span class="mono muted">CCNUM · M2 MEEF Anglais · Séance théorique · 3 h</span>
+    <h1>Le numérique éducatif</h1>
+    <p class="lede">Au centre, l'objectif langagier. Autour, sept repères : Bloom, compétences du 21e siècle, SAMR, outils communs, RGPD, Pix, IA. Aucun ne tient seul ; chacun ramène à la même question : <strong>qu'est-ce que mes élèves apprennent à faire en anglais ?</strong></p>
+  </div>
+  <div class="flower-box">
+    <svg id="flower" viewBox="-215 -215 430 430" role="group" aria-label="Sommaire : cliquez sur un repère pour aller à la section"></svg>
+  </div>
+</header>
+
+<!-- CŒUR -->
+<section class="petal-sec" id="coeur" style="--p:var(--heart)">
+  <div class="sec-head"><span class="mono">Le cœur</span><h2>L'objectif langagier d'abord</h2><span class="time">15 min</span></div>
+  <div class="texts">
+    <p class="lead">Les programmes de langues vivantes publiés en 2025 (collège et lycée) inscrivent l'enseignement dans une <strong>approche orientée vers l'action</strong>, héritée du CECRL : l'élève apprend la langue en accomplissant des tâches, comme un acteur social. Chaque séance vise donc d'abord une <strong>activité langagière</strong>, à un niveau de maîtrise défini pour chaque année. Les programmes regroupent ces activités en trois catégories.</p>
+    <div class="trio">
+      <div><span class="name">Réception</span><p>Comprendre l'oral et l'écrit : écouter, regarder, lire des documents authentiques et en construire le sens.</p></div>
+      <div><span class="name">Production</span><p>S'exprimer en continu, à l'oral et à l'écrit : décrire, raconter, expliquer, argumenter.</p></div>
+      <div><span class="name">Interaction et médiation</span><p>Échanger avec d'autres, et transmettre ou reformuler une information pour quelqu'un. La médiation est présentée comme « au cœur de toute communication ».</p></div>
+    </div>
+    <p class="lead">Pour réaliser ces activités, l'élève mobilise des <strong>outils de la langue</strong> (lexique, grammaire, phonologie), apportés selon une progressivité explicite, en contexte, puis entraînés. Le numérique vient éventuellement servir l'une de ces activités ou l'entraînement de ces outils ; il n'est jamais l'objectif.</p>
+  </div>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Une activité numérique que vous avez menée ou observée en stage : laquelle des trois pratiques ? Qu'ont appris les élèves, en anglais ?</p></div>
+      <details class="layer"><summary>Des usages faibles<span class="lvl">après la réflexion</span></summary><div class="layer-body">
+        <p>Des usages fréquents, souvent bien intentionnés, où l'anglais pratiqué est minime.</p>
+        <ul class="weak-list">
+          <li><strong>Le diaporama qui remplace le tableau.</strong> L'enseignant projette, les élèves regardent. Rien ne change pour eux.</li>
+          <li><strong>L'exerciseur de fin d'heure, déconnecté de la tâche finale.</strong> Il occupe les élèves, mais n'entraîne pas ce dont ils auront besoin.</li>
+          <li><strong>« Find information about… » sur internet.</strong> Les élèves copient, collent, lisent souvent en français. Très peu d'anglais est produit.</li>
+          <li><strong>La vidéo récitée face caméra.</strong> Texte rédigé en français, passé au traducteur, appris par cœur. Une heure de montage pour trente secondes d'anglais.</li>
+          <li><strong>Le pad où chacun dépose une image ou un lien.</strong> Aucune production en anglais, aucune exploitation collective ensuite.</li>
+          <li><strong>Le texte tapé, rendu, noté.</strong> Pas de brouillon, pas de réécriture : le traitement de texte n'a rien apporté.</li>
+          <li><strong>Le nuage de mots fait pour lui-même.</strong> Joli à l'écran, jamais réutilisé dans une production.</li>
+        </ul>
+        <p class="vig">Point commun : on ne peut pas formuler l'objectif langagier, ou bien l'outil n'y contribue pas.</p>
+      </div></details>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Le numérique n'a de valeur que s'il sert un objectif d'apprentissage qu'on atteindrait moins bien sans lui.</p>
+        <p>Un objectif langagier se formule avant de penser à un outil. Il comporte quatre éléments :</p>
+        <ul>
+          <li><strong>une activité langagière</strong> : production orale en continu ;</li>
+          <li><strong>un niveau visé</strong> : A2 vers B1 ;</li>
+          <li><strong>des outils de la langue</strong> : le prétérit, les connecteurs chronologiques, la prononciation de <em>-ed</em> ;</li>
+          <li><strong>une tâche qui a du sens</strong> : raconter un souvenir de voyage à la classe, qui pose ensuite des questions.</li>
+        </ul>
+        <p>L'outil vient ensuite, ou ne vient pas.</p>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>Le référentiel de compétences des enseignants (2013) intègre la culture numérique (compétence 9) au service des apprentissages, pas comme une fin en soi. La recherche le confirme : un outil numérique n'améliore pas mécaniquement les apprentissages ; c'est l'usage pédagogique qui fait la différence.</p>
+        <div class="quiz"><p class="quiz-q">Un exerciseur de 20 questions sur le prétérit : activité langagière ou entraînement ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Un entraînement sur un outil de la langue. Il est utile, mais l'élève ne communique pas : il ne s'agit pas d'une activité langagière au sens du CECRL. L'exerciseur prépare la tâche ; il ne la remplace pas.</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>Programmes d'enseignements communs et optionnels de langues vivantes étrangères pour les classes de collège et de lycée général et technologique, arrêté du 5 mai 2025, <a href="https://www.education.gouv.fr/bo/2025/Hebdo22/MENE2504621A" target="_blank" rel="noopener">BO n°22 du 29 mai 2025</a>, application progressive de la rentrée 2025 (6e, 2de) à la rentrée 2028 (3e).</li>
+        <li>Référentiel des compétences professionnelles des métiers du professorat et de l'éducation, arrêté du 1er juillet 2013, <a href="https://www.education.gouv.fr/bo/13/Hebdo30/MENE1315928A.htm" target="_blank" rel="noopener">BO n°30 du 25 juillet 2013</a>, compétence 9.</li>
+        <li>Conseil de l'Europe, <a href="https://www.coe.int/fr/web/common-european-framework-reference-languages" target="_blank" rel="noopener">CECRL, volume complémentaire (2018, éd. 2021)</a> : approche actionnelle, activités de médiation et d'interaction en ligne.</li>
+        <li>Amadieu F. et Tricot A. (2014), <em>Apprendre avec le numérique : mythes et réalités</em>, Retz.</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · quel objectif ?</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Mémoriser et automatiser du lexique ou une structure. Un outil d'entraînement, pas une fin.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>Production orale en continu. Le risque : un texte appris et lu face caméra, et plus de temps passé au montage qu'à parler anglais.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>Production écrite. Le risque : l'élève écrit seul, rend sa copie et la récupère notée, sans jamais la réécrire ni la faire relire par un camarade. La note arrive quand l'apprentissage est terminé.</p></div>
+      <p class="gain">Pour chacune, une seule question : quelle part du temps l'élève passe-t-il réellement à pratiquer l'anglais ?</p></aside>
+  </div>
+</section>
+
+<!-- BLOOM -->
+<section class="petal-sec" id="bloom" style="--p:var(--c-bloom)">
+  <div class="sec-head"><span class="mono">Repère 1</span><h2>La taxonomie de Bloom</h2><span class="time">25 min</span></div>
+  <p class="question">Quelle opération mentale je demande vraiment à mes élèves ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Écrivez une consigne en anglais que vous avez donnée (ou reçue) pour un exerciseur, une vidéo ou un écrit. Ensuite, classons toutes vos consignes de la moins à la plus exigeante.</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Six niveaux qui s'appuient les uns sur les autres. On ne crée pas en anglais sans les outils de la langue pour le faire.</p>
+        <p>Les niveaux supérieurs supposent que les niveaux inférieurs ont été construits. En langue vivante, cela veut dire que le lexique, la grammaire et la phonologie nécessaires à la tâche finale ont été <strong>apportés, compris et entraînés</strong> en amont. En classe de langue, on peut donc lire Bloom comme la progression d'une séquence : la tâche finale, annoncée dès le début, vise les niveaux supérieurs, et les outils de la langue sont apportés et entraînés pour la rendre possible. La taxonomie classe des objectifs ; elle ne prescrit pas un ordre unique.</p>
+        <p class="mono muted">Exemple de progression · séquence « Advertising », tâche finale : une publicité vidéo</p>
+        <div class="ladder">
+          <div class="rung" style="--w:8"><b>1</b><span><strong>Se souvenir</strong></span><span><i class="ptag">Exerciseur</i><em>Match the adjectives with the products.</em> Apport et mémorisation du lexique de la publicité.</span></div>
+          <div class="rung" style="--w:12"><b>2</b><span><strong>Comprendre</strong></span><span><i class="ptag">Exerciseur</i><em>Watch three real ads: who is the target, what is the message?</em></span></div>
+          <div class="rung" style="--w:16"><b>3</b><span><strong>Appliquer</strong></span><span><i class="ptag">Écrit</i><em>Write three slogans using the imperative and superlatives.</em> Entraînement sur les structures de la tâche finale.</span></div>
+          <div class="rung" style="--w:20"><b>4</b><span><strong>Analyser</strong></span><span><i class="ptag">Écrit</i><em>Compare two ads: which techniques make them persuasive?</em> Les critères de réussite émergent.</span></div>
+          <div class="rung" style="--w:24"><b>5</b><span><strong>Évaluer</strong></span><span><i class="ptag">Vidéo</i><em>Give feedback on a classmate's draft using our criteria.</em></span></div>
+          <div class="rung" style="--w:28"><b>6</b><span><strong>Créer</strong></span><span><i class="ptag">Vidéo</i><em>Script, film and edit a one-minute ad for a product you invent.</em> L'élève réinvestit tout ce qui précède.</span></div>
+        </div>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>En langue vivante, les niveaux cognitifs et le niveau de langue se croisent : un élève A2 peut évaluer ou créer, avec des moyens linguistiques simples, <strong>à condition que ces moyens lui aient été donnés</strong>. Sans eux, une consigne « créer » met l'élève en échec ou le pousse vers le traducteur automatique. La plupart des activités d'une séquence se situent sur <strong>se souvenir, comprendre et appliquer</strong> : c'est là que se construisent les outils de la langue. La tâche finale vise plus haut parce que ce socle existe.</p>
+        <div class="quiz"><p class="quiz-q">« Film yourself presenting your favourite place » : quel niveau ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Tout dépend de ce qui précède. Sans apport linguistique préalable, l'élève écrit en français, traduit, puis récite : on reste à « se souvenir », sans réel apprentissage. Si le lexique des lieux et les structures de description ont été apportés et entraînés, l'élève peut choisir, organiser et adapter son propos à un public : on atteint « appliquer », voire « créer ». La caméra ne fixe pas le niveau : la consigne et la préparation, si.</div></div>
+        <div class="quiz"><p class="quiz-q">Le numérique fait-il monter de niveau dans Bloom ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Non. Un quiz en ligne reste du « se souvenir ». C'est la consigne qui fixe le niveau ; l'outil peut seulement rendre ce niveau plus accessible ou plus visible.</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>Bloom B. S. (dir.) (1956), <em>Taxonomy of Educational Objectives. Handbook I: Cognitive Domain</em>, David McKay.</li>
+        <li>Anderson L. W. et Krathwohl D. R. (dir.) (2001), <em>A Taxonomy for Learning, Teaching, and Assessing</em>, Longman : version révisée, verbes d'action, « créer » au sommet.</li>
+        <li>Krathwohl D. R. (2002), « A Revision of Bloom's Taxonomy: An Overview », <em>Theory Into Practice</em>, 41(4) : la hiérarchie cumulative stricte de 1956 est assouplie ; les catégories se chevauchent et une même activité mobilise souvent plusieurs niveaux.</li>
+        <li><strong>Un point de vue alternatif, l'approche par les tâches</strong> (Willis J., 1996, <em>A Framework for Task-Based Learning</em>, Longman ; Ellis R., 2003, <em>Task-based Language Learning and Teaching</em>, Oxford University Press) : on part de la tâche, les élèves découvrent ce qui leur manque, et le travail sur la langue (<em>focus on form</em>) vient au moment du besoin. La question porte sur le moment où les outils de la langue sont apportés, jamais sur leur nécessité.</li>
+        <li>C'est un outil de conception, pas un classement des élèves.</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · au prisme de Bloom</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Se souvenir, appliquer. C'est le socle : il sert à fixer les outils de la langue dont la tâche finale aura besoin. Il n'a pas à monter ; il doit être relié à cette tâche.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>Elle peut atteindre « créer », mais seulement si le lexique et les structures ont été apportés et entraînés avant. Sinon : texte traduit, puis récité.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>D'« appliquer » (réemployer la structure travaillée) à « créer ». L'analyse de textes modèles fait passer par les niveaux 4 et 5, une fois les outils de la langue en place.</p></div>
+      <p class="gain">Les trois pratiques ne s'opposent pas : elles se succèdent dans une séquence. L'exerciseur prépare, l'écrit structure, la tâche finale réinvestit.</p></aside>
+  </div>
+</section>
+
+<!-- 21e SIÈCLE -->
+<section class="petal-sec" id="c21" style="--p:var(--c-c21)">
+  <div class="sec-head"><span class="mono">Repère 2</span><h2>Les compétences du 21e siècle</h2><span class="time">15 min</span></div>
+  <p class="question">Au-delà de l'anglais, qu'est-ce que mes élèves développent ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Citez une compétence dont vos élèves auront besoin dans dix ans et qu'aucun manuel n'enseigne directement.</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Communication, collaboration, créativité, esprit critique : les « 4C ». Une langue vivante les mobilise par nature.</p>
+        <ul>
+          <li><strong>Communication :</strong> s'exprimer et comprendre, en tenant compte du destinataire.</li>
+          <li><strong>Collaboration :</strong> construire ensemble, répartir les rôles, intégrer le regard des autres.</li>
+          <li><strong>Créativité :</strong> produire quelque chose de nouveau, faire des choix.</li>
+          <li><strong>Esprit critique :</strong> analyser, comparer, vérifier, justifier.</li>
+        </ul>
+        <p>Ces compétences ne s'enseignent pas à part : elles naissent de tâches bien conçues. Ce sont les mêmes étapes qui font monter dans Bloom et dans SAMR.</p>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>La perspective actionnelle du CECRL va dans le même sens : l'élève est un acteur social qui accomplit des tâches avec d'autres. La communication est notre objectif premier ; la collaboration, la créativité et l'esprit critique en découlent quand la tâche le permet. Elles ne remplacent jamais l'objectif langagier : elles l'accompagnent.</p>
+        <div class="quiz"><p class="quiz-q">Un exposé individuel appris par cœur, puis récité : quels « C » sont mobilisés ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Au mieux une communication à sens unique, et faible. Il suffit d'ajouter quelques étapes pour mobiliser les quatre : choisir son contenu (créativité), préparer à deux (collaboration), évaluer la version d'un camarade avec des critères (esprit critique), adapter son propos à un public (communication).</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>OCDE (2019), <a href="https://www.oecd.org/en/about/projects/future-of-education-and-skills-2030.html" target="_blank" rel="noopener">Boussole de l'apprentissage 2030</a> : compétences transformatrices (créer de la valeur, concilier tensions et dilemmes, assumer ses responsabilités).</li>
+        <li>Partnership for 21st Century Learning (P21), <em>Framework for 21st Century Learning</em>, aujourd'hui porté par Battelle for Kids : les 4C.</li>
+        <li>UNESCO (2015), <em>Repenser l'éducation : vers un bien commun mondial ?</em></li>
+        <li>Socle commun de connaissances, de compétences et de culture, décret n° 2015-372 du 31 mars 2015 : domaine 2 (méthodes et outils pour apprendre) et domaine 3 (formation de la personne et du citoyen).</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · quels « C » ?</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Aucun en soi : travail individuel, réponses fermées. Il construit les outils de la langue qui serviront ensuite à communiquer.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>Communication et créativité. Collaboration si elle est préparée en groupe, esprit critique si elle passe par une évaluation entre pairs.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>Communication écrite et esprit critique (analyse de modèles, choix des arguments). Collaboration dans les étapes en amont, même pour une tâche finale individuelle.</p></div>
+      <p class="gain">Les 4C ne s'ajoutent pas à la séquence : ils viennent du travail en amont.</p></aside>
+  </div>
+</section>
+
+<!-- SAMR -->
+<section class="petal-sec" id="samr" style="--p:var(--c-samr)">
+  <div class="sec-head"><span class="mono">Repère 3</span><h2>Le modèle SAMR</h2><span class="time">25 min</span></div>
+  <p class="question">Qu'est-ce que le numérique change réellement à la tâche ?</p>
+  <div class="main-col">
+    <div class="pad"><span class="mono">Réflexion</span><p>Vos élèves rendent leur écrit tapé plutôt que manuscrit, ou leur oral filmé plutôt qu'en direct. Qu'est-ce qui change, vraiment ?</p></div>
+    <details class="layer" open><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+      <p class="key">Quatre degrés : on remplace, on améliore, on transforme, on invente une tâche impossible sans le numérique.</p>
+      <div class="table-wrap"><table class="samr">
+        <thead><tr><th>Degré</th><th>Le test</th><th>Exerciseur</th><th>Vidéo</th><th>Écrit</th></tr></thead>
+        <tbody>
+          <tr style="--w:6"><td>S · Substitution</td><td class="test">Sans le numérique, je ferais exactement pareil.</td><td>Le QCM papier, mis en ligne.</td><td>L'élève se filme en récitant son exposé.</td><td>L'élève tape son texte au lieu de l'écrire à la main.</td></tr>
+          <tr style="--w:12"><td>A · Augmentation</td><td class="test">Pareil, mais mieux.</td><td>Le même QCM, corrigé tout de suite : l'élève voit son erreur et recommence.</td><td>L'élève se regarde, repère ses erreurs et refilme avant de rendre.</td><td>L'enseignant commente dans le document ; l'élève corrige et rend une deuxième version.</td></tr>
+          <tr style="--w:18"><td>M · Modification</td><td class="test">La tâche n'est plus la même.</td><td>Ce sont les élèves qui fabriquent le QCM pour la classe.</td><td>Chaque élève regarde la vidéo d'un camarade, la commente avec une grille, puis refait la sienne.</td><td>Chaque élève relit le texte d'un camarade avec les critères de la classe, puis réécrit le sien.</td></tr>
+          <tr style="--w:26"><td>R · Redéfinition*</td><td class="test">Impossible sans le numérique.</td><td class="weak">Rarement utile : l'exerciseur sert à s'entraîner, et c'est très bien ainsi.</td><td>Les élèves tournent un tutoriel en anglais (une recette, un tour de magie) que d'autres classes devront suivre seules. Si les explications ne sont pas claires, ça ne marche pas.</td><td>Les élèves écrivent une histoire interactive en ligne : à la fin de chaque passage, le lecteur choisit la suite en cliquant, et chaque groupe écrit l'une des suites.</td></tr>
+        </tbody></table></div>
+      <p class="note-star">* C'est le travail en amont qui fait la redéfinition : apport et entraînement du lexique et des structures, analyse de modèles, collaboration et coopération entre élèves, brouillons, retours, réécriture. Si le tutoriel ou l'histoire sont produits par une IA, la tâche a l'air redéfinie, mais l'apport langagier pour l'élève est nul.</p>
+      <p class="muted" style="font-size:.95rem">Lire le tableau de haut en bas, colonne par colonne : à chaque ligne, on ajoute une seule chose (la correction immédiate, la deuxième version, le regard d'un pair, un destinataire réel).</p>
+    </div></details>
+    <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+      <p><strong>Bloom × SAMR</strong> : les deux modèles répondent à deux questions différentes. Bloom mesure ce que l'élève fait dans sa tête ; SAMR mesure ce que l'outil change à la tâche. Le piège classique : une activité très technologique et cognitivement pauvre (une vidéo spectaculaire où l'élève lit un texte appris par cœur).</p>
+      <p>Les trois pratiques peuvent toutes rester en substitution. Le passage en augmentation ou en modification ne demande pas un outil plus complexe, mais <strong>une étape de plus</strong> : se réécouter, réécrire, recevoir le regard des pairs.</p>
+      <p><strong>La redéfinition ne tient pas à la mise en ligne.</strong> Publier un texte recopié ou une vidéo récitée, c'est une substitution exposée au public. Ce qui redéfinit la tâche, c'est le travail en amont : analyser des modèles authentiques, écrire pour un destinataire réel et identifié, faire des allers-retours entre retours et réécriture, interagir avec ce destinataire. La publication n'est que l'aboutissement.</p>
+      <p>La substitution n'est pas une faute. Elle est parfois utile (accessibilité, élève dyspraxique). Le problème, c'est de ne jamais en sortir, ou de croire qu'on a innové.</p>
+      <div class="quiz"><p class="quiz-q">Le pad où un élève décrit une maison pendant que son binôme la dessine dans sa case : quel degré ?</p>
+        <button class="reveal" type="button">Voir la réponse</button>
+        <div class="answer" hidden>Modification si la mise en commun est exploitée : on zoome, on compare toutes les productions, on voit où la description a manqué de précision. Sans cette phase, on reste proche de l'augmentation.</div></div>
+    </div></details>
+    <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+      <li>Puentedura R. (2006 et suivantes), modèle SAMR, présentations disponibles sur <a href="http://hippasus.com/rrpweblog/" target="_blank" rel="noopener">hippasus.com</a>.</li>
+      <li>Hamilton E. R., Rosenberg J. M. et Akcaoglu M. (2016), « The SAMR Model: a Critical Review and Suggestions for its Use », <em>TechTrends</em>, 60(5) : le modèle est peu fondé empiriquement et ne doit pas devenir une échelle à gravir. Il sert à interroger, pas à noter.</li>
+    </ul></div></details>
+  </div>
+</section>
+
+<!-- OUTILS -->
+<section class="petal-sec" id="outils" style="--p:var(--c-outils)">
+  <div class="sec-head"><span class="mono">Repère 4</span><h2>Les outils communs</h2><span class="time">15 min</span></div>
+  <p class="question">Avec quoi travailler, sans se disperser ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Quels outils utilisez-vous déjà avec vos élèves ? Pour chacun : avec ou sans compte élève ?</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Peu d'outils, bien maîtrisés, choisis d'abord dans l'environnement institutionnel.</p>
+        <ul>
+          <li><strong>L'ENT</strong> de l'établissement : cahier de textes, dépôt de fichiers, messagerie. Le premier réflexe.</li>
+          <li><strong>Apps Éducation</strong> : la plateforme d'outils du ministère pour les personnels (visio, stockage, hébergement de vidéos, pads).</li>
+          <li><strong>La Digitale</strong> : outils libres, souvent sans compte élève (Digipad, Digistorm, Digiquiz, Digidoc…).</li>
+          <li><strong>Le site de l'établissement</strong> : pour publier les productions, avec l'accord du chef d'établissement.</li>
+        </ul>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>Chaque outil se choisit pour une activité langagière : un pad pour l'interaction écrite et la comparaison, un enregistreur pour l'oral en continu, un nuage de mots pour faire émerger le lexique. Changer d'outil à chaque séance fait perdre du temps de langue : les élèves apprennent l'outil au lieu d'apprendre l'anglais.</p>
+        <div class="quiz"><p class="quiz-q">Trois outils pour une même séance de 55 minutes : bonne idée ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Rarement. Chaque prise en main coûte plusieurs minutes et crée des incidents techniques. Un outil connu des élèves, exploité à fond, vaut mieux que trois découvertes.</div></div>
+        <p class="vig">Manipulation des outils : lors des séances pratiques qui suivent, sur votre propre séquence.</p>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li><a href="https://apps.education.fr" target="_blank" rel="noopener">apps.education.fr</a> : portail des outils numériques du ministère.</li>
+        <li><a href="https://ladigitale.dev" target="_blank" rel="noopener">ladigitale.dev</a> : outils libres pour l'éducation.</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · quels outils ?</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>LearningApps, Digiquiz : sans compte élève, à partager par lien ou QR code.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>Enregistreur des tablettes de l'établissement ; hébergement sur l'espace vidéo d'Apps Éducation plutôt que sur une plateforme grand public. Penser à l'audio seul : souvent suffisant, plus léger.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>Digistorm pour faire émerger le lexique, Digipad pour mutualiser arguments et critères, traitement de texte de l'ENT ou Digidoc pour les brouillons commentés.</p></div>
+      <p class="gain">Un outil par fonction : faire émerger, mutualiser, produire, partager.</p></aside>
+  </div>
+</section>
+
+<!-- RGPD -->
+<section class="petal-sec" id="rgpd" style="--p:var(--c-rgpd)">
+  <div class="sec-head"><span class="mono">Repère 5</span><h2>Le RGPD</h2><span class="time">20 min</span></div>
+  <p class="question">Que deviennent les données de mes élèves ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Vrai ou faux : « Si l'application est gratuite et que tout le monde l'utilise, je peux la proposer à mes élèves. »</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Une donnée qui permet d'identifier un élève est une donnée personnelle. Moins on en collecte, mieux c'est.</p>
+        <ul>
+          <li>Un nom, une photo, <strong>une voix</strong>, un identifiant : ce sont des données personnelles.</li>
+          <li>Dans un EPLE, le <strong>chef d'établissement</strong> est responsable des traitements ; l'enseignant le consulte avant d'introduire un outil qui collecte des données.</li>
+          <li>Le <strong>DPO académique</strong> conseille ; les traitements sont inscrits au registre de l'établissement.</li>
+          <li>Les familles sont <strong>informées</strong> ; l'élève exerce ses droits (accès, effacement).</li>
+          <li>Toute <strong>diffusion publique</strong> de la voix, de l'image ou d'un texte signé d'un élève mineur demande l'autorisation écrite de ses représentants légaux.</li>
+        </ul>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>L'oral est au cœur de notre discipline, donc la voix de l'élève circule souvent. Préférer les outils institutionnels ou sans compte, les prénoms ou pseudonymes, aucun visage dans les productions partagées, et un partage limité (lien privé, plateforme sécurisée).</p>
+        <div class="quiz"><p class="quiz-q">Un élève propose de publier les vidéos de la classe sur un réseau social grand public. Pourquoi refuser ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>Comptes élèves chez un acteur commercial, visages et voix publiés, données hébergées hors de tout contrôle, réutilisation possible. Le gain pédagogique (un public) est déjà apporté par le site de l'établissement, sous la responsabilité du chef d'établissement et avec l'accord des familles.</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>Règlement (UE) 2016/679, <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener">RGPD</a>, applicable depuis le 25 mai 2018 : licéité, minimisation, limitation de conservation, transparence.</li>
+        <li><a href="https://www.cnil.fr/fr/education" target="_blank" rel="noopener">CNIL, espace Éducation</a> : fiches pratiques pour les enseignants et les établissements.</li>
+        <li>Le site de votre académie : contact du DPO et liste des services numériques conseillés.</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · quelles données ?</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Risque faible si l'outil fonctionne sans compte. Vigilance sur les scores nominatifs stockés chez un éditeur privé : prénom ou pseudonyme.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>La pratique la plus sensible : visage et voix. Privilégier l'audio ou des plans sans visage, un hébergement institutionnel, et prévoir une version sans les élèves non autorisés.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>Moins sensible, mais un texte signé reste une donnée personnelle. Pad sans compte, prénom ou initiales en cas de publication, avec l'accord des familles.</p></div>
+      <p class="gain">Plus la production sort de la classe, plus le cadre doit être solide.</p></aside>
+  </div>
+</section>
+
+<!-- PIX -->
+<section class="petal-sec" id="pix" style="--p:var(--c-pix)">
+  <div class="sec-head"><span class="mono">Repère 6</span><h2>Pix et le CRCN</h2><span class="time">15 min</span></div>
+  <p class="question">Quelles compétences numériques mes élèves développent-ils sans le savoir ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Vos élèves sont « nés avec le numérique ». Qu'est-ce qu'ils savent vraiment faire, et qu'est-ce qu'ils croient savoir faire ?</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">Le CRCN décrit 16 compétences en 5 domaines. Pix les évalue et les certifie.</p>
+        <div class="crcn">
+          <div class="dom"><p class="dom-t"><span>1</span>Information et données</p><ul><li class="hl"><b>1.1</b><span>Mener une recherche et une veille d'information<small>chercher, trier et vérifier des sources en anglais</small></span></li><li><b>1.2</b><span>Gérer des données</span></li><li><b>1.3</b><span>Traiter des données</span></li></ul></div>
+          <div class="dom"><p class="dom-t"><span>2</span>Communication et collaboration</p><ul><li class="hl"><b>2.1</b><span>Interagir<small>échanger en anglais par écrit ou à l'oral, commenter</small></span></li><li class="hl"><b>2.2</b><span>Partager et publier<small>diffuser une production pour un public</small></span></li><li class="hl"><b>2.3</b><span>Collaborer<small>pad commun, écriture à plusieurs, relecture croisée</small></span></li><li><b>2.4</b><span>S'insérer dans le monde numérique</span></li></ul></div>
+          <div class="dom"><p class="dom-t"><span>3</span>Création de contenus</p><ul><li class="hl"><b>3.1</b><span>Développer des documents textuels<small>rédiger, réviser, mettre en forme un écrit</small></span></li><li class="hl"><b>3.2</b><span>Développer des documents multimédia<small>enregistrement audio, vidéo, diaporama commenté</small></span></li><li class="hl"><b>3.3</b><span>Adapter les documents à leur finalité<small>tenir compte du destinataire, proche de la médiation</small></span></li><li><b>3.4</b><span>Programmer</span></li></ul></div>
+          <div class="dom"><p class="dom-t"><span>4</span>Protection et sécurité</p><ul><li><b>4.1</b><span>Sécuriser l'environnement numérique</span></li><li><b>4.2</b><span>Protéger les données personnelles et la vie privée<small>à aborder dès qu'une production est publiée</small></span></li><li><b>4.3</b><span>Protéger la santé, le bien-être et l'environnement</span></li></ul></div>
+          <div class="dom"><p class="dom-t"><span>5</span>Environnement numérique</p><ul><li><b>5.1</b><span>Résoudre des problèmes techniques</span></li><li><b>5.2</b><span>Évoluer dans un environnement numérique</span></li></ul></div>
+        </div>
+        <p class="crcn-legend"><mark>Surligné</mark> : compétences qui se prêtent généralement bien à un cours de langue.</p>
+        <p>Certification Pix en fin de cycle 4 (3e) et en fin de cycle terminal. Toutes les disciplines contribuent à ces compétences, l'anglais compris.</p>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>On ne fait pas « du Pix » en anglais : on nomme les compétences numériques que la tâche mobilise déjà, pour que les élèves en prennent conscience.</p>
+        <div class="quiz"><p class="quiz-q">Laquelle des trois pratiques mobilise le moins de compétences du CRCN ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>L'exerciseur, tant que l'élève se contente d'y répondre : il utilise un outil sans rien produire ni partager. Dès qu'il conçoit un quiz pour ses camarades, il entre dans le domaine 3 (création de contenus).</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>Décret n° 2019-919 du 30 août 2019 relatif au développement des compétences numériques et à la création de Pix ; arrêté du même jour fixant le CRCN.</li>
+        <li><a href="https://pix.fr" target="_blank" rel="noopener">pix.fr</a> : parcours, certification et, pour les enseignants, Pix+ Édu.</li>
+        <li>Le CRCN s'appuie sur le cadre européen DigComp.</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · quelles compétences CRCN ?</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Peu, en réponse. En conception : 3.1 Développer des documents textuels.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>3.2 Développer des documents multimédia ; 2.2 Partager et publier ; 4.2 Protéger les données personnelles et la vie privée.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>3.1 Développer des documents textuels ; 2.3 Collaborer (relecture croisée, pad commun) ; 2.2 Partager et publier en cas de publication.</p></div>
+      <p class="gain">Les compétences numériques sont nommées, sans prendre de temps sur l'objectif langagier.</p></aside>
+  </div>
+</section>
+
+<!-- IA -->
+<section class="petal-sec" id="ia" style="--p:var(--c-ia)">
+  <div class="sec-head"><span class="mono">Repère 7</span><h2>L'IA générative</h2><span class="time">25 min</span></div>
+  <p class="question">Qui fait le travail langagier : l'élève ou la machine ?</p>
+  <div class="cols">
+    <div class="main-col">
+      <div class="pad"><span class="mono">Réflexion</span><p>Un élève vous rend un écrit impeccable, visiblement rédigé par une IA. Que faites-vous ?</p></div>
+      <details class="layer"><summary>L'essentiel<span class="lvl">couche 1</span></summary><div class="layer-body">
+        <p class="key">L'IA relit les six repères précédents : elle peut faire monter l'élève dans Bloom, ou faire le travail à sa place.</p>
+        <ul>
+          <li><strong>Cadre d'usage du ministère (juin 2025) :</strong> utilisation autonome par les élèves à partir de la 4e ; avant, l'enseignant peut l'utiliser devant la classe.</li>
+          <li>Un usage non autorisé pour un devoir est une fraude. L'enseignant fixe et explique les règles.</li>
+          <li>Cinq principes : plus-value pédagogique, protection des données saisies, impact environnemental, transparence, esprit critique.</li>
+          <li>Formation des élèves de 4e et de Seconde via Pix depuis la rentrée 2025.</li>
+        </ul>
+        <p class="note-star"><strong>Frugalité.</strong> Chaque requête à une IA générative consomme de l'énergie et de l'eau, bien plus qu'une recherche classique. Si 35 élèves envoient chacun leurs requêtes, dans plusieurs classes, l'impact se multiplie vite. Un usage collectif (une requête par groupe, ou une requête menée par l'enseignant devant la classe, par exemple sur l'espace IA de Vittascience qui affiche la consommation de chaque requête) est souvent plus sobre, et pédagogiquement plus riche : le groupe doit d'abord se mettre d'accord sur ce qu'il demande, en anglais.</p>
+      </div></details>
+      <details class="layer"><summary>En classe d'anglais<span class="lvl">couche 2</span></summary><div class="layer-body">
+        <p>Relire chaque repère avec l'IA :</p>
+        <ul>
+          <li><strong>Cœur :</strong> si l'IA produit le texte, l'élève ne s'entraîne plus à produire.</li>
+          <li><strong>Bloom :</strong> « créer » délégué à la machine fait redescendre l'élève à « se souvenir ». Bien utilisée, l'IA donne au contraire à évaluer : <em>compare your text with the AI's suggestion, keep three changes and justify them.</em></li>
+          <li><strong>21e siècle :</strong> l'esprit critique devient central : vérifier, comparer, repérer ce que l'IA invente.</li>
+          <li><strong>SAMR :</strong> faire rédiger par l'IA ressemble à une redéfinition ; c'est en réalité une substitution de l'élève.</li>
+          <li><strong>RGPD :</strong> aucune donnée personnelle dans un outil grand public ; préférer les solutions validées par l'institution.</li>
+          <li><strong>Pix :</strong> vérifier, sourcer, repérer les erreurs (domaine 1, Information et données) ; mesurer l'impact environnemental de ses usages (4.3).</li>
+          <li><strong>Frugalité :</strong> se demander si l'IA est nécessaire, et si oui, combien de requêtes. Une requête par groupe, préparée ensemble, plutôt qu'une par élève.</li>
+        </ul>
+        <div class="quiz"><p class="quiz-q">Pour un écrit en classe de Seconde, quel usage de l'IA est pertinent ?</p>
+          <button class="reveal" type="button">Voir la réponse</button>
+          <div class="answer" hidden>L'élève rédige d'abord en classe, seul, puis un camarade le relit avec les critères de la classe. Ensuite, par groupes de quatre, les élèves choisissent un seul texte et rédigent ensemble, en anglais, la requête à soumettre à l'IA : repérer trois faiblesses à partir des critères, sans réécrire. Le groupe discute des remarques, puis chacun les applique à son propre texte et explique ses changements dans une courte note. Une requête au lieu de quatre, et un vrai travail de langue pour formuler la demande.</div></div>
+      </div></details>
+      <details class="layer"><summary>Pour aller plus loin<span class="lvl">couche 3</span></summary><div class="layer-body"><ul class="sources">
+        <li>Ministère de l'Éducation nationale (2025), <a href="https://www.education.gouv.fr/publication-du-cadre-d-usage-de-l-intelligence-artificielle-en-education-462936" target="_blank" rel="noopener">Cadre d'usage de l'intelligence artificielle en éducation</a>, publié le 14 juin 2025.</li>
+        <li>UNESCO (2023), <em>Orientations pour l'IA générative dans l'éducation et la recherche</em>.</li>
+        <li>Pour mesurer l'impact : <a href="https://comparia.beta.gouv.fr" target="_blank" rel="noopener">compar:IA</a>, service public du ministère de la Culture, compare deux modèles à l'aveugle puis affiche leur consommation énergétique estimée.</li>
+        <li>Pour un usage en classe : <a href="https://fr.vittascience.com/ia/text?localId=loc65d3b974d682e8" target="_blank" rel="noopener">l'espace IA de Vittascience</a>, une interface d'IA générative pensée pour l'éducation, qui affiche la consommation de chaque requête : les élèves voient ce que coûte leur demande. À utiliser de préférence en collectif ou par groupe.</li>
+        <li>Règlement (UE) 2024/1689 sur l'intelligence artificielle (AI Act) : l'éducation figure parmi les domaines à haut risque pour certains usages (orientation, évaluation).</li>
+      </ul></div></details>
+    </div>
+    <aside class="side"><span class="mono">Trois pratiques · avec l'IA</span>
+      <div class="prac"><span class="name">Exerciseur</span><p>Côté enseignant : générer des exercices différenciés, à vérifier avant usage. Côté élève : rarement utile, un exerciseur classique suffit et ne consomme presque rien.</p></div>
+      <div class="prac"><span class="name">Vidéo</span><p>Risque : un script entièrement généré, puis lu. Usage pertinent : une fois par groupe, l'IA propose les questions qu'un spectateur pourrait se poser ; les élèves s'entraînent à y répondre à l'oral.</p></div>
+      <div class="prac"><span class="name">Écrit</span><p>Risque : le texte généré. Usage pertinent : une requête par groupe, rédigée ensemble en anglais ; l'IA relit à partir des critères de la classe et signale sans réécrire ; chacun justifie ses modifications.</p></div>
+      <p class="gain">L'IA sert l'entraînement et la relecture, de préférence en groupe ; la production reste celle de l'élève.</p></aside>
+  </div>
+</section>
+
+<!-- SYNTHÈSE -->
+<section class="petal-sec" id="synthese" style="--p:var(--heart)">
+  <div class="sec-head"><span class="mono">Synthèse</span><h2>Huit questions pour votre séquence</h2><span class="time">10 min</span></div>
+  <div class="seq">
+    <p class="seq-t">Une séquence qui fait progresser</p>
+    <p>Avant d'appliquer la grille, vérifiez que votre séquence alterne ces cinq types de phases.</p>
+    <ol class="phases">
+      <li><b>Découverte et analyse</b><span>Comprendre un document, repérer comment il fonctionne, et développer des stratégies transférables à d'autres documents.</span></li>
+      <li><b>Entraînement</b><span>Réemployer le lexique et les structures dans des activités guidées, souvent et brièvement.</span></li>
+      <li><b>Fixation de la langue</b><span>Traces écrites et enrichissement linguistique : ce qui a été découvert et entraîné est formalisé, noté, mémorisé.</span></li>
+      <li><b>Évaluation</b><span>Vérifier les acquis en cours de route, pas seulement à la fin : l'élève sait où il en est.</span></li>
+      <li><b>Remédiation</b><span>Revenir sur ce qui n'est pas acquis, autrement, avant d'avancer.</span></li>
+    </ol>
+    <p class="seq-note">La séquence reste courte, quelques semaines tout au plus. Ces phases ne se suivent pas une seule fois dans l'ordre : elles reviennent régulièrement, en allers-retours, pour que l'élève voie lui-même ses progrès.</p>
+  </div>
+  <p>La grille ci-dessous servira pendant les séances pratiques : appliquez-la à chaque activité numérique de votre séquence.</p>
+  <div class="grid7">
+    <div class="q7" style="--p:var(--heart)"><span class="mono">Cœur</span><p>Quel objectif langagier, quelle activité, quel niveau du CECRL ?</p><small>Si je retire l'outil, l'objectif tient-il toujours ?</small></div>
+    <div class="q7" style="--p:var(--c-bloom)"><span class="mono">Bloom</span><p>Quel verbe dans ma consigne, donc quel niveau cognitif ?</p><small>Ma séquence monte-t-elle vers la tâche finale ?</small></div>
+    <div class="q7" style="--p:var(--c-c21)"><span class="mono">21e siècle</span><p>Quelles compétences au-delà de la langue : communication, collaboration, créativité, esprit critique ?</p><small>Viennent-elles des étapes en amont, ou d'une étiquette ajoutée ?</small></div>
+    <div class="q7" style="--p:var(--c-samr)"><span class="mono">SAMR</span><p>Qu'est-ce que l'outil change à la tâche ?</p><small>Quelle étape en amont (réécoute, réécriture, pairs, destinataire réel) ferait monter d'un degré ?</small></div>
+    <div class="q7" style="--p:var(--c-outils)"><span class="mono">Outils</span><p>Est-ce l'outil le plus simple, déjà connu des élèves ?</p><small>Plan B prévu en cas de panne ?</small></div>
+    <div class="q7" style="--p:var(--c-rgpd)"><span class="mono">RGPD</span><p>Quelles données d'élèves circulent, et où ?</p><small>Compte, voix, image, hébergement, information des familles.</small></div>
+    <div class="q7" style="--p:var(--c-pix)"><span class="mono">Pix</span><p>Quelles compétences du CRCN je peux nommer ?</p><small>Sans en faire un objectif à part.</small></div>
+    <div class="q7" style="--p:var(--c-ia)"><span class="mono">IA</span><p>Qui fait le travail langagier ?</p><small>Niveau de classe, règles annoncées, trace de l'usage, nombre de requêtes.</small></div>
+  </div>
+</section>
+
+<footer>CCNUM · M2 MEEF Anglais · 2026 · Design créé avec l'IA</footer>
+</div>
+
+<button class="back" type="button" id="backBtn">↑ Sommaire</button>
+
+<script>
+(function(){
+  var petals=[
+    {id:"bloom",label:"Bloom",min:"25 min",c:"--c-bloom"},
+    {id:"c21",label:"21e siècle",min:"15 min",c:"--c-c21"},
+    {id:"samr",label:"SAMR",min:"25 min",c:"--c-samr"},
+    {id:"outils",label:"Outils",min:"15 min",c:"--c-outils"},
+    {id:"rgpd",label:"RGPD",min:"20 min",c:"--c-rgpd"},
+    {id:"pix",label:"Pix · CRCN",min:"15 min",c:"--c-pix"},
+    {id:"ia",label:"IA",min:"25 min",c:"--c-ia"}
+  ];
+  var NS="http://www.w3.org/2000/svg", svg=document.getElementById("flower");
+  var petalPath="M0,-66 C46,-82 58,-150 0,-200 C-58,-150 -46,-82 0,-66 Z";
+  var defs=document.createElementNS(NS,"defs");
+  defs.innerHTML='<filter id="petalShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#0b1a14" flood-opacity=".16"/></filter>'+
+    '<filter id="petalShadowHover" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="11" flood-color="#0b1a14" flood-opacity=".24"/></filter>'+
+    '<filter id="heartShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#0b1a14" flood-opacity=".28"/></filter>'+
+    '<radialGradient id="heartGrad" cx="38%" cy="32%" r="75%"><stop offset="0" style="stop-color:color-mix(in srgb,var(--heart) 70%,#fff)"/><stop offset="1" style="stop-color:var(--heart)"/></radialGradient>';
+  svg.appendChild(defs);
+  function go(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+  function bind(g,id){
+    g.addEventListener("click",function(){go(id)});
+    g.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go(id)}});
+  }
+  petals.forEach(function(p,i){
+    var g=document.createElementNS(NS,"g");
+    g.setAttribute("class","petal");g.setAttribute("tabindex","0");g.setAttribute("role","button");
+    g.setAttribute("aria-label",p.label+", "+p.min);
+    g.style.setProperty("--p","var("+p.c+")");
+    var ang=i*360/petals.length;
+    var gid="pg"+i, cv="var("+p.c+")";
+    var lg=document.createElementNS(NS,"linearGradient");
+    lg.setAttribute("id",gid);lg.setAttribute("gradientUnits","userSpaceOnUse");
+    lg.setAttribute("x1","0");lg.setAttribute("y1","-66");lg.setAttribute("x2","0");lg.setAttribute("y2","-200");
+    lg.innerHTML='<stop offset="0" style="stop-color:color-mix(in srgb,'+cv+' 10%,var(--surface))"/><stop offset="1" style="stop-color:color-mix(in srgb,'+cv+' 42%,var(--surface))"/>';
+    defs.appendChild(lg);
+    var path=document.createElementNS(NS,"path");
+    path.setAttribute("d",petalPath);path.setAttribute("transform","rotate("+ang+")");
+    path.setAttribute("fill","url(#"+gid+")");
+    g.appendChild(path);
+    var vein=document.createElementNS(NS,"path");
+    vein.setAttribute("class","shine");vein.setAttribute("d","M-26,-98 C-38,-126 -34,-158 -16,-180");vein.setAttribute("transform","rotate("+ang+")");
+    g.appendChild(vein);
+    var rad0=ang*Math.PI/180;
+    g.style.setProperty("--dx",(Math.sin(rad0)*7).toFixed(1)+"px");g.style.setProperty("--dy",(-Math.cos(rad0)*7).toFixed(1)+"px");
+    var r=138, rad=ang*Math.PI/180, x=Math.sin(rad)*r, y=-Math.cos(rad)*r;
+    var t=document.createElementNS(NS,"text");t.setAttribute("x",x);t.setAttribute("y",y);t.textContent=p.label;g.appendChild(t);
+    var t2=document.createElementNS(NS,"text");t2.setAttribute("x",x);t2.setAttribute("y",y+17);t2.setAttribute("class","t-min");t2.textContent=p.min;g.appendChild(t2);
+    bind(g,p.id);svg.appendChild(g);
+  });
+  var h=document.createElementNS(NS,"g");h.setAttribute("class","heart");h.setAttribute("tabindex","0");h.setAttribute("role","button");h.setAttribute("aria-label","Le cœur : objectif langagier");
+  var c=document.createElementNS(NS,"circle");c.setAttribute("r","60");h.appendChild(c);
+  [["Objectif",-6,""],["langagier",14,""],["LE CŒUR",-28,"t-small"]].forEach(function(a){var t=document.createElementNS(NS,"text");t.setAttribute("y",a[1]);if(a[2])t.setAttribute("class",a[2]);t.textContent=a[0];h.appendChild(t)});
+  bind(h,"coeur");svg.appendChild(h);
+
+  document.querySelectorAll(".reveal").forEach(function(b){
+    b.addEventListener("click",function(){var a=b.nextElementSibling;a.hidden=!a.hidden;b.textContent=a.hidden?"Voir la réponse":"Masquer la réponse"});
+  });
+  document.getElementById("backBtn").addEventListener("click",function(){go("top")});
+})();
+</script>
+</body>
+</html>
